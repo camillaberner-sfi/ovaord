@@ -3,7 +3,7 @@ frukost = första måltiden på dagen
 lunch = måltiden mitt på dagen
 middag = måltiden på kvällen
 
-# Vecka 1
-hund = ett djur som säger vov
-skola = en plats där barn och unga lär sig
+# Vecka 40 - Ekonomi
+inkomst = Pengar som kommer in.  Pengar som jag tjänar.
+utgift = Pengar som går ut. Pengar som jag betalar. 
 vän = en person som man tycker om och litar på
