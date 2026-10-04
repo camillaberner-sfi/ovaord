@@ -1,0 +1,9 @@
+# Vecka 2
+frukost = första måltiden på dagen
+lunch = måltiden mitt på dagen
+middag = måltiden på kvällen
+
+# Vecka 1
+hund = ett djur som säger vov
+skola = en plats där barn och unga lär sig
+vän = en person som man tycker om och litar på

@@ -56,6 +56,8 @@ select,.nm{width:100%;padding:12px;font:600 17px Lexend,system-ui,sans-serif;bor
 <body>
 <main>
 <h1>Öva ord</h1>
+<p class="hint" id="sub" hidden></p>
+<select id="ssel" hidden aria-label="Välj lista"></select>
 <nav role="tablist">
 <button role="tab" data-t="list" aria-selected="true">Ordlista</button>
 <button role="tab" data-t="flash" aria-selected="false">Flashcards</button>
@@ -67,7 +69,8 @@ select,.nm{width:100%;padding:12px;font:600 17px Lexend,system-ui,sans-serif;bor
 <input class="nm" id="nm" type="text" aria-label="Listans namn" placeholder="Listans namn, till exempel Vecka 12">
 <textarea id="src" aria-label="Ordlista" placeholder="hund = ett djur som säger vov&#10;skola = en plats där man lär sig&#10;vän"></textarea>
 <p class="hint">Varje lista sparas för sig. Ett ord per rad. Lägg gärna till en förklaring på svenska efter ett likamedtecken (=). Den visas på baksidan av kortet.</p>
-<div class="row"><button class="btn" id="save">Spara listan</button><button class="btn alt" id="share">Skapa elevlänk</button></div>
+<div class="row"><button class="btn" id="save">Spara listan</button><button class="btn alt" id="share">Elevlänk för den här listan</button><button class="btn alt" id="pub">Elevlänk för alla listor</button></div>
+<textarea id="exp" readonly hidden aria-label="Text att kopiera till listor.txt" style="min-height:150px;margin-top:10px"></textarea>
 <input class="link" id="link" readonly hidden aria-label="Elevlänk">
 <p class="hint" id="msg" aria-live="polite"></p>
 </section>
@@ -76,6 +79,23 @@ select,.nm{width:100%;padding:12px;font:600 17px Lexend,system-ui,sans-serif;bor
 </main>
 <script>
 var $=function(s){return document.querySelector(s)};
+var words=[];
+var DEF="hund = ett djur som säger vov\nskola = en plats där barn och unga lär sig\nvän = en person som man tycker om och litar på\nfrukost = första måltiden på dagen";
+function parse(t){return t.split(/\n/).map(function(l){var m=l.match(/^([^=\t]*)[=\t](.*)$/);return m?{w:m[1].trim(),t:m[2].trim()}:{w:l.trim(),t:""}}).filter(function(x){return x.w})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function enc(s){return btoa(unescape(encodeURIComponent(s)))}
+function dec(s){return decodeURIComponent(escape(atob(s)))}
+
+var L=null,STUDENT=false,QMODE=false,T="list";
+try{var h=location.hash.slice(1);if(h.indexOf("l=")===0){
+var d=dec(decodeURIComponent(h.slice(2))),o;
+try{o=JSON.parse(d);if(typeof o.t!=="string")throw 0}catch(e){o={n:"Delad lista",t:d}}
+L={lists:[{n:o.n||"Delad lista",t:o.t}],cur:0};STUDENT=true}
+else if(/[?&]elev\b/.test(location.search)){L={lists:[{n:"",t:""}],cur:0};STUDENT=true;QMODE=true}}catch(e){}
+if(!STUDENT){try{L=JSON.parse(store("listor"))}catch(e){}
+if(!L||!L.lists||!L.lists.length){L={lists:[{n:"Vecka 1",t:store("ord")||DEF}],cur:0}}}
 var words=[];
 var DEF="hund = ett djur som säger vov\nskola = en plats där barn och unga lär sig\nvän = en person som man tycker om och litar på\nfrukost = första måltiden på dagen";
 function parse(t){return t.split(/\n/).map(function(l){var m=l.match(/^([^=\t]*)[=\t](.*)$/);return m?{w:m[1].trim(),t:m[2].trim()}:{w:l.trim(),t:""}}).filter(function(x){return x.w})}
@@ -113,7 +133,7 @@ clearTimeout(dt);dt=null;b.textContent="Ta bort listan";
 if(L.lists.length===1)L.lists[0]={n:"Ny lista",t:""};else{L.lists.splice(L.cur,1);L.cur=Math.max(0,L.cur-1)}
 store("listor",JSON.stringify(L));fill();$("#msg").textContent="Listan är borttagen."};
 
-function show(t){
+function show(t){T=t;
 document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===t)});
 ["list","flash","dict"].forEach(function(id){$("#"+id).hidden=id!==t});
 if(t==="flash")startFlash(words);
@@ -126,9 +146,27 @@ $("#share").onclick=function(){
 persist();
 var u=location.href.split("#")[0]+"#l="+encodeURIComponent(enc(JSON.stringify({n:cur().n,t:cur().t})));
 var i=$("#link");i.hidden=false;i.value=u;i.select();
-$("#msg").textContent="Skicka länken till eleverna. Den här listan ligger i länken.";
+$("#msg").textContent="Skicka länken till eleverna. Den öppnar bara övningsläget med den här listan, utan redigering.";
 try{navigator.clipboard.writeText(u)}catch(e){}
 };
+
+$("#pub").onclick=function(){
+persist();
+var txt=L.lists.slice().reverse().map(function(x){return"# "+(x.n||"Namnlös")+"\n"+x.t.trim()}).join("\n\n")+"\n";
+var e=$("#exp");e.hidden=false;e.value=txt;e.select();
+var u=location.href.split(/[?#]/)[0]+"?elev";
+var i=$("#link");i.hidden=false;i.value=u;
+try{navigator.clipboard.writeText(txt)}catch(x){}
+$("#msg").textContent="Texten i rutan är alla dina listor (nyaste först). Lägg in den i filen listor.txt på GitHub. Länken ovanför rutan är elevlänken som alltid fungerar.";
+};
+function parseLists(t){var out=[],c=null;
+t.split(/\r?\n/).forEach(function(l){var m=l.match(/^#\s*(.*)$/);
+if(m){c={n:m[1].trim()||"Namnlös",t:""};out.push(c)}else if(c){c.t+=(c.t?"\n":"")+l}});
+out.forEach(function(x){x.t=x.t.trim()});return out.filter(function(x){return x.t})}
+function studentSetup(){
+$("#ssel").innerHTML=L.lists.map(function(x,i){return'<option value="'+i+'">'+esc(x.n)+'</option>'}).join("");
+$("#ssel").hidden=false;words=parse(cur().t);show("flash")}
+$("#ssel").onchange=function(){L.cur=+$("#ssel").value;words=parse(cur().t);show(T)};
 
 /* Flashcards */
 var F;
@@ -196,6 +234,15 @@ $("#go").textContent="Nästa ord";
 $("#go").onclick=check;
 ans.onkeydown=function(e){if(e.key==="Enter")check()};
 ans.focus();
+}
+if(STUDENT){
+document.querySelector('nav button[data-t="list"]').hidden=true;
+if(QMODE){
+$("#sub").hidden=false;$("#sub").textContent="Hämtar listor...";
+fetch("listor.txt?v="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+var ls=parseLists(t);if(!ls.length)throw 0;L={lists:ls,cur:0};$("#sub").hidden=true;studentSetup()
+}).catch(function(){$("#sub").textContent="Hittade inga listor. Be din lärare kontrollera filen listor.txt."});
+}else{$("#sub").hidden=false;$("#sub").textContent=cur().n||"";show("flash")}
 }
 try{speechSynthesis.getVoices()}catch(e){}
 </script>
