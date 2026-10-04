@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Öva ord</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#eef3f8;--paper:#fff;--ink:#14284b;--soft:#5b6b86;--line:#c9d6e6;--mark:#ffd84d;--ok:#1f8a4c;--bad:#c23a3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b30;--paper:#182643;--ink:#eaf0fb;--soft:#9fb0cc;--line:#2c3e60;--ok:#5fd18d;--bad:#ff8484}}
+:root[data-theme="dark"]{--bg:#0f1b30;--paper:#182643;--ink:#eaf0fb;--soft:#9fb0cc;--line:#2c3e60;--ok:#5fd18d;--bad:#ff8484}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 Lexend,system-ui,sans-serif;min-height:100%}
+main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:28px;font-weight:800;margin:8px 0 16px;letter-spacing:-.02em}
+nav{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--line)}
+nav button{flex:1;background:none;border:0;padding:12px 6px;font:600 16px Lexend,system-ui,sans-serif;color:var(--soft);cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-2px}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--mark)}
+button,input,textarea{font-family:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn{background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:12px 18px;font:600 16px Lexend,system-ui,sans-serif;cursor:pointer}
+.btn.alt{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.btn.ok{background:var(--ok);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.row>.btn{flex:1;min-width:130px}
+textarea{width:100%;min-height:240px;padding:14px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.5;resize:vertical}
+.hint{color:var(--soft);font-size:15px;margin:8px 0}
+.meta{color:var(--soft);font-size:15px;display:flex;justify-content:space-between;margin-bottom:10px}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-bottom:18px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--mark);transition:width .3s}
+.card{width:100%;min-height:240px;background:var(--paper);border:2px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;cursor:pointer;font:800 clamp(32px,9vw,52px)/1.15 Lexend,system-ui,sans-serif;color:var(--ink);word-break:break-word}
+.card small{font:400 14px Lexend,system-ui,sans-serif;color:var(--soft);margin-top:14px}
+.card.back{background:var(--mark);color:#14284b;border-color:var(--mark)}
+.card.back small{color:#14284b}
+.dict{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:22px;text-align:center}
+.say{font-size:20px;padding:16px 26px}
+input[type=text]{width:100%;margin-top:18px;padding:14px;font-size:24px;text-align:center;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.res{margin-top:16px;font-size:30px;font-weight:800;letter-spacing:.04em}
+.res .x{color:var(--bad);text-decoration:underline wavy}
+.good{color:var(--ok);font-weight:600}
+.badmsg{color:var(--bad);font-weight:600}
+.done{text-align:center;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:28px 18px}
+.done b{font-size:44px;display:block}
+.miss{color:var(--soft);margin:10px 0 0}
+label.chk{display:inline-flex;gap:8px;align-items:center;margin-top:14px;color:var(--soft);font-size:15px}
+.link{width:100%;margin-top:8px;padding:10px;font-size:14px;border:2px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+select,.nm{width:100%;padding:12px;font:600 17px Lexend,system-ui,sans-serif;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);margin-bottom:10px}
+.nm{font-weight:400}
+.sm{padding:9px 12px;font-size:15px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Öva ord</h1>
+<nav role="tablist">
+<button role="tab" data-t="list" aria-selected="true">Ordlista</button>
+<button role="tab" data-t="flash" aria-selected="false">Flashcards</button>
+<button role="tab" data-t="dict" aria-selected="false">Diktamen</button>
+</nav>
+<section id="list">
+<select id="sel" aria-label="Välj lista"></select>
+<div class="row" style="margin:0 0 12px"><button class="btn alt sm" id="new">+ Ny lista</button><button class="btn alt sm" id="del">Ta bort listan</button></div>
+<input class="nm" id="nm" type="text" aria-label="Listans namn" placeholder="Listans namn, till exempel Vecka 12">
+<textarea id="src" aria-label="Ordlista" placeholder="hund = ett djur som säger vov&#10;skola = en plats där man lär sig&#10;vän"></textarea>
+<p class="hint">Varje lista sparas för sig. Ett ord per rad. Lägg gärna till en förklaring på svenska efter ett likamedtecken (=). Den visas på baksidan av kortet.</p>
+<div class="row"><button class="btn" id="save">Spara listan</button><button class="btn alt" id="share">Skapa elevlänk</button></div>
+<input class="link" id="link" readonly hidden aria-label="Elevlänk">
+<p class="hint" id="msg" aria-live="polite"></p>
+</section>
+<section id="flash" hidden></section>
+<section id="dict" hidden></section>
+</main>
+<script>
+var $=function(s){return document.querySelector(s)};
+var words=[];
+var DEF="hund = ett djur som säger vov\nskola = en plats där barn och unga lär sig\nvän = en person som man tycker om och litar på\nfrukost = första måltiden på dagen";
+function parse(t){return t.split(/\n/).map(function(l){var m=l.match(/^([^=\t]*)[=\t](.*)$/);return m?{w:m[1].trim(),t:m[2].trim()}:{w:l.trim(),t:""}}).filter(function(x){return x.w})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function enc(s){return btoa(unescape(encodeURIComponent(s)))}
+function dec(s){return decodeURIComponent(escape(atob(s)))}
+
+var L=null;
+try{L=JSON.parse(store("listor"))}catch(e){}
+if(!L||!L.lists||!L.lists.length){L={lists:[{n:"Vecka 1",t:store("ord")||DEF}],cur:0}}
+try{var h=location.hash.slice(1);if(h.indexOf("l=")===0){
+var d=dec(decodeURIComponent(h.slice(2))),o;
+try{o=JSON.parse(d);if(typeof o.t!=="string")throw 0}catch(e){o={n:"Delad lista",t:d}}
+var ix=-1;L.lists.forEach(function(x,i){if(x.n===o.n)ix=i});
+if(ix<0){L.lists.push({n:o.n||"Delad lista",t:o.t});ix=L.lists.length-1}else L.lists[ix].t=o.t;
+L.cur=ix}}catch(e){}
+var words=[];
+function cur(){return L.lists[L.cur]}
+function persist(){cur().t=$("#src").value;store("listor",JSON.stringify(L));words=parse(cur().t)}
+function fill(){
+$("#sel").innerHTML=L.lists.map(function(x,i){return'<option value="'+i+'">'+esc(x.n||"Namnlös")+'</option>'}).join("");
+$("#sel").value=L.cur;$("#nm").value=cur().n;$("#src").value=cur().t;words=parse(cur().t);$("#link").hidden=true;
+}
+fill();
+$("#sel").onchange=function(){cur().t=$("#src").value;L.cur=+$("#sel").value;store("listor",JSON.stringify(L));fill();$("#msg").textContent=""};
+$("#nm").oninput=function(){cur().n=$("#nm").value;var o=$("#sel").options[L.cur];o.text=cur().n||"Namnlös"};
+$("#new").onclick=function(){persist();L.lists.push({n:"",t:""});L.cur=L.lists.length-1;store("listor",JSON.stringify(L));fill();$("#nm").focus();$("#msg").textContent="Ny lista skapad. Ge den ett namn och skriv in orden."};
+var dt=null;
+$("#del").onclick=function(){
+var b=$("#del");
+if(!dt){b.textContent="Tryck igen för att ta bort";dt=setTimeout(function(){dt=null;b.textContent="Ta bort listan"},3000);return}
+clearTimeout(dt);dt=null;b.textContent="Ta bort listan";
+if(L.lists.length===1)L.lists[0]={n:"Ny lista",t:""};else{L.lists.splice(L.cur,1);L.cur=Math.max(0,L.cur-1)}
+store("listor",JSON.stringify(L));fill();$("#msg").textContent="Listan är borttagen."};
+
+function show(t){
+document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===t)});
+["list","flash","dict"].forEach(function(id){$("#"+id).hidden=id!==t});
+if(t==="flash")startFlash(words);
+if(t==="dict")startDict(words);
+}
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){
+if(!$("#list").hidden)persist();show(b.dataset.t)}});
+$("#save").onclick=function(){persist();$("#msg").textContent="Listan \u201d"+(cur().n||"Namnlös")+"\u201d sparad ("+words.length+" ord)."};
+$("#share").onclick=function(){
+persist();
+var u=location.href.split("#")[0]+"#l="+encodeURIComponent(enc(JSON.stringify({n:cur().n,t:cur().t})));
+var i=$("#link");i.hidden=false;i.value=u;i.select();
+$("#msg").textContent="Skicka länken till eleverna. Den här listan ligger i länken.";
+try{navigator.clipboard.writeText(u)}catch(e){}
+};
+
+/* Flashcards */
+var F;
+function startFlash(list){
+if(!list.length){$("#flash").innerHTML='<p class="hint">Lägg till ord i fliken Ordlista först.</p>';return}
+F={q:shuffle(list),total:list.length,known:0,flipped:false,missed:[]};drawFlash();
+}
+function drawFlash(){
+var el=$("#flash");
+if(!F.q.length){
+el.innerHTML='<div class="done"><b>Bra jobbat!</b>Du kan alla '+F.total+' ord.<div class="row"><button class="btn" id="again">Öva igen</button></div></div>';
+$("#again").onclick=function(){startFlash(words)};return}
+var c=F.q[0];
+el.innerHTML='<div class="meta"><span>Kan: '+F.known+' av '+F.total+'</span><span>Kvar: '+F.q.length+'</span></div>'+
+'<div class="bar"><i style="width:'+(F.known/F.total*100)+'%"></i></div>'+
+'<button class="card'+(F.flipped?' back':'')+'" id="card" aria-label="Vänd kortet">'+
+(F.flipped?esc(c.t||"(ingen förklaring)"):esc(c.w))+'<small>'+(F.flipped?'Förklaring':'Tryck för att vända')+'</small></button>'+
+'<div class="row"><button class="btn alt" id="no">Kan inte än</button><button class="btn ok" id="yes">Kan den</button></div>';
+$("#card").onclick=function(){F.flipped=!F.flipped;drawFlash()};
+$("#yes").onclick=function(){F.q.shift();F.known++;F.flipped=false;drawFlash()};
+$("#no").onclick=function(){F.q.push(F.q.shift());F.flipped=false;drawFlash()};
+}
+
+/* Diktamen */
+var D;
+function say(w){
+try{
+speechSynthesis.cancel();
+var u=new SpeechSynthesisUtterance(w);u.lang="sv-SE";u.rate=D&&D.slow?0.6:0.9;
+var v=speechSynthesis.getVoices().filter(function(x){return /^sv/i.test(x.lang)})[0];if(v)u.voice=v;
+speechSynthesis.speak(u);
+}catch(e){}
+}
+function startDict(list){
+if(!list.length){$("#dict").innerHTML='<p class="hint">Lägg till ord i fliken Ordlista först.</p>';return}
+D={q:shuffle(list),i:0,right:0,wrong:[],checked:false,slow:D?D.slow:false};drawDict();
+}
+function drawDict(){
+var el=$("#dict");
+if(D.i>=D.q.length){
+el.innerHTML='<div class="done"><b>'+D.right+' av '+D.q.length+'</b>rätt'+
+(D.wrong.length?'<p class="miss">Öva mer på: '+D.wrong.map(function(x){return esc(x.w)}).join(", ")+'</p>':'')+
+'<div class="row">'+(D.wrong.length?'<button class="btn" id="redo">Öva på missade</button>':'')+'<button class="btn alt" id="all">Börja om</button></div></div>';
+if(D.wrong.length)$("#redo").onclick=function(){startDict(D.wrong.slice())};
+$("#all").onclick=function(){startDict(words)};return}
+el.innerHTML='<div class="meta"><span>Ord '+(D.i+1)+' av '+D.q.length+'</span><span>Rätt: '+D.right+'</span></div>'+
+'<div class="bar"><i style="width:'+(D.i/D.q.length*100)+'%"></i></div>'+
+'<div class="dict"><button class="btn say" id="say">🔊 Lyssna</button><br>'+
+'<label class="chk"><input type="checkbox" id="slow"'+(D.slow?' checked':'')+'> Långsamt</label>'+
+'<input type="text" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Skriv ordet">'+
+'<div id="res" class="res" aria-live="polite"></div>'+
+'<div class="row"><button class="btn" id="go">Kolla</button></div></div>';
+var cur=D.q[D.i],ans=$("#ans");
+$("#say").onclick=function(){say(cur.w);ans.focus()};
+$("#slow").onchange=function(e){D.slow=e.target.checked;say(cur.w)};
+function check(){
+if(D.checked){D.i++;D.checked=false;drawDict();var a=$("#ans");if(a){a.focus();say(D.q[D.i]&&D.q[D.i].w)}return}
+var g=ans.value.trim(),ok=g.toLowerCase()===cur.w.toLowerCase();D.checked=true;ans.readOnly=true;
+if(ok){D.right++;$("#res").innerHTML='<span class="good">Rätt!</span>'}
+else{D.wrong.push(cur);
+var h="";for(var k=0;k<cur.w.length;k++){var m=(g[k]||"").toLowerCase()===cur.w[k].toLowerCase();h+=m?esc(cur.w[k]):'<span class="x">'+esc(cur.w[k])+'</span>'}
+$("#res").innerHTML=h+'<div class="badmsg" style="font-size:16px;font-weight:600">Så här stavas ordet</div>'}
+$("#go").textContent="Nästa ord";
+}
+$("#go").onclick=check;
+ans.onkeydown=function(e){if(e.key==="Enter")check()};
+ans.focus();
+}
+try{speechSynthesis.getVoices()}catch(e){}
+</script>
+</body>
+</html>
