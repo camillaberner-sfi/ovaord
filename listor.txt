@@ -7,9 +7,9 @@ nödvändig = något som jag måste ha eller betala
 ekonomi = handlar om pengar och resurser
 
 # Vecka 40 - Öva plural
-en inkomst, flera = inkomster
-en kostnad, flera = kostnader
-ett hushåll, flera = hushåll
-en krona, flera = kronor
-en utgift, flera = utgifter
+en inkomst = flera inkomster
+en kostnad = flera kostnader
+ett hushåll = flera hushåll
+en krona = flera kronor
+en utgift = flera utgifter
 
