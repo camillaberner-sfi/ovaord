@@ -1,9 +1,15 @@
-# Vecka 2
-frukost = första måltiden på dagen
-lunch = måltiden mitt på dagen
-middag = måltiden på kvällen
-
 # Vecka 40 - Ekonomi
 inkomst = Pengar som kommer in.  Pengar som jag tjänar.
 utgift = Pengar som går ut. Pengar som jag betalar. 
-vän = en person som man tycker om och litar på
+hushåll = där en eller flera personer bor tillsammans
+en kostnad = något som kostar pengar
+nödvändig = något som jag måste ha eller betala
+ekonomi = handlar om pengar och resurser
+
+# Vecka 40 - Öva plural
+en inkomst, flera = inkomster
+en kostnad, flera = kostnader
+ett hushåll, flera = hushåll
+en krona, flera = kronor
+en utgift, flera = utgifter
+
