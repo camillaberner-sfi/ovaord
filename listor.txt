@@ -1,3 +1,14 @@
+# Beredskap
+ström = ett annat ord för el
+strömavbrott = när elen försvinner hemma
+elnät = ett system som levererar el till husen
+beredskap = att veta hur man klarar en kris
+förbereda sig = saker man gör innan något händer
+kommunikation = olika sätt att kontakta andra eller få information
+myndighet = en plats som tar hand om och har ansvar för olika delar av samhället
+
+
+
 # Vecka 40 - Ekonomi
 inkomst = Pengar som kommer in.  Pengar som jag tjänar.
 utgift = Pengar som går ut. Pengar som jag betalar. 
