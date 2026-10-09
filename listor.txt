@@ -1,11 +1,16 @@
 # Beredskap
 ström = ett annat ord för el
-strömavbrott = när elen försvinner hemma
-elnät = ett system som levererar el till husen
-beredskap = att veta hur man klarar en kris
+strömavbrott = när elen försvinner
+elnät = ett system som levererar el till hus
+beredskap = att veta vad som är viktigt om något händer
 förbereda sig = saker man gör innan något händer
 kommunikation = olika sätt att kontakta andra eller få information
-myndighet = en plats som tar hand om och har ansvar för olika delar av samhället
+myndighet = de tar hand om och har ansvar för olika delar av samhället
+livsmedel = ett annat ord för saker man kan äta
+ett batteri = gör att saker fungerar utan el
+ficklampa = en lampa som man kan bära med sig
+värmeljus = små ljus som man kan elda
+
 
 
 
