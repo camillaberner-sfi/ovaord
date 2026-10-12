@@ -1,3 +1,4 @@
+
 # Beredskap
 ström = ett annat ord för el
 strömavbrott = när elen försvinner
@@ -10,6 +11,8 @@ livsmedel = ett annat ord för saker man kan äta
 ett batteri = gör att saker fungerar utan el
 ficklampa = en lampa som man kan bära med sig
 värmeljus = små ljus som man kan elda
+fotogenlykta = en lykta som inte behöver el 
+
 
 
 
