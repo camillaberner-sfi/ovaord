@@ -12,6 +12,7 @@ Slöseri = motsatsen till spara
 Resurser = sådant som vi använder för att leva, till exempel pengar
 Transport = olika sätt att köra saker, till exempel lastbil eller tåg
 
+
 # Beredskap
 ström = ett annat ord för el
 strömavbrott = när elen försvinner
